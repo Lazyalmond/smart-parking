@@ -328,3 +328,22 @@ export const mockSlotHeatmap = [
   { slot: "B-03", density: 90, label: "สูงมาก" },
   { slot: "B-04", density: 60, label: "ปานกลาง" },
 ];
+
+export const mockUsers = [
+  {
+    id: "u-1",
+    username: "superadmin",
+    password: "password123",
+    name: "ผู้ดูแลระบบสูงสุด",
+    role: "superadmin",
+    permissions: ["live_map", "finance", "activity", "manage_roles"]
+  },
+  {
+    id: "u-2",
+    username: "admin",
+    password: "password123",
+    name: "เจ้าหน้าที่ดูแลระบบ",
+    role: "admin",
+    permissions: ["live_map", "activity"]
+  }
+];

@@ -8,7 +8,8 @@ import {
   Zap, 
   CarFront, 
   TrendingUp, 
-  Clock 
+  Clock,
+  LogOut // 👈 1. เพิ่ม import ตัวนี้
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -26,13 +27,14 @@ import {
   mockSlotHeatmap 
 } from '../../data/mockData';
 
-export default function AdminDashboard() {
+// 👈 2. รับ props { currentUser, onLogout } เข้ามาตรงนี้
+export default function AdminDashboard({ currentUser, onLogout }) {
   const [activeMenu, setActiveMenu] = useState('map'); // 'map' | 'finance' | 'activity' | 'roles'
-  const [role, setRole] = useState('superadmin'); // 'superadmin' | 'admin'
   const [selectedFloor, setSelectedFloor] = useState('FL1');
 
-  // สิทธิ์เมนู (Super Admin เข้าได้หมด / Admin ทั่วไปเข้า Roles ไม่ได้)
-  const canAccessRoles = role === 'superadmin';
+  // ตรวจสอบสิทธิ์จากคนที่ล็อกอินเข้ามาจริง (ถ้าไม่มี mock ค่าเริ่มต้นไว้)
+  const userRole = currentUser?.role || 'superadmin';
+  const canAccessRoles = userRole === 'superadmin';
 
   const exportData = (type) => {
     alert(`กำลังดาวน์โหลดรายงาน ${type} ในรูปแบบ CSV/Excel...`);
@@ -43,17 +45,11 @@ export default function AdminDashboard() {
       {/* Sidebar เมนูหลัก */}
       <aside className="w-64 bg-slate-900 border-r border-slate-800 p-5 flex flex-col justify-between shrink-0">
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">Admin Portal</span>
-            {/* ตัวสลับสิทธิ์ Super Admin / Admin */}
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="bg-slate-800 text-[11px] px-2 py-1 rounded border border-slate-700 text-emerald-400"
-            >
-              <option value="superadmin">Super Admin</option>
-              <option value="admin">Admin ทั่วไป</option>
-            </select>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 font-semibold uppercase">
+              {userRole}
+            </span>
           </div>
 
           <nav className="space-y-1.5 text-sm">
@@ -101,8 +97,24 @@ export default function AdminDashboard() {
           </nav>
         </div>
 
-        <div className="text-[11px] text-slate-500 border-t border-slate-800 pt-3">
-          สิทธิ์ปัจจุบัน: <span className="text-emerald-400 font-semibold">{role.toUpperCase()}</span>
+        {/* ส่วนท้ายของ Sidebar: ข้อมูล User + ปุ่ม Logout */}
+        <div className="border-t border-slate-800 pt-4 space-y-3">
+          <div className="text-[11px] text-slate-400">
+            <p className="font-semibold text-slate-200 truncate">
+              {currentUser?.name || 'ผู้ดูแลระบบ'}
+            </p>
+            <p className="text-[10px] text-slate-500">
+              สถานะ: <span className="text-emerald-400 font-semibold">{userRole.toUpperCase()}</span>
+            </p>
+          </div>
+
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-semibold transition"
+          >
+            <LogOut size={14} />
+            ออกจากระบบ
+          </button>
         </div>
       </aside>
 
@@ -300,7 +312,7 @@ export default function AdminDashboard() {
             <p className="text-xs text-slate-400">เฉพาะ Super Admin เท่านั้นที่สามารถกำหนดสิทธิ์เข้าถึงเมนูได้</p>
             <div className="space-y-3 pt-3">
               {['ผังเซนเซอร์ช่องจอด (Live Map)', 'รายงานการเงิน (Finance)', 'รายงานกิจกรรม (Activity & Heatmap)'].map((perm, idx) => (
-                <label key={idx} className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+                <label key={idx} className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs cursor-pointer">
                   <span>{perm}</span>
                   <input type="checkbox" defaultChecked className="accent-emerald-500 w-4 h-4" />
                 </label>

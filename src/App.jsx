@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import UserPaymentFlow from "./pages/user/UserPaymentFlow";
 import KioskDisplays from "./pages/kiosk/KioskDisplays";
+import AdminPortal from "./pages/admin/AdminPortal"; // เปลี่ยนมาเรียกผ่าน Portal ที่มีระบบ Login
 import { Smartphone, MonitorPlay, ShieldCheck } from "lucide-react";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export default function App() {
   const [currentView, setCurrentView] = useState("user"); // 'user' | 'kiosk' | 'admin'
@@ -62,23 +62,7 @@ export default function App() {
       <main className="flex-1">
         {currentView === "user" && <UserPaymentFlow />}
         {currentView === "kiosk" && <KioskDisplays />}
-        {currentView === "admin" && (
-          <div className="flex flex-col items-center justify-center h-[80vh] text-center p-6">
-            <ShieldCheck size={64} className="text-slate-600 mb-4" />
-            <h3 className="text-xl font-bold text-slate-300">
-              หน้า Admin Backoffice กำลังรอสร้าง
-            </h3>
-            <p className="text-xs text-slate-500 mt-2">
-              ส่วนถัดไป: ผังเซนเซอร์ช่องจอดสด (Live Map), รายงานการเงิน, และ
-              Heatmap
-            </p>
-            <main className="flex-1">
-              {currentView === "user" && <UserPaymentFlow />}
-              {currentView === "kiosk" && <KioskDisplays />}
-              {currentView === "admin" && <AdminDashboard />}
-            </main>
-          </div>
-        )}
+        {currentView === "admin" && <AdminPortal />}
       </main>
     </div>
   );
