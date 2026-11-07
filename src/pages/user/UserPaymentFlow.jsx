@@ -83,13 +83,13 @@ export default function UserPaymentFlow() {
                 type="submit"
                 className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-semibold text-sm transition"
               >
-                ค้นหารถของฉัน
+                ค้นหารถ
               </button>
-              <p className="text-xs text-[#7A869A] text-center">ทดสอบพิมพ์: 1กก-9999 หรือ 2ขข-1234</p>
+              <p className="text-xs text-[#7A869A] text-center">1กก-9999 หรือ 2ขข-1234</p>
             </form>
           )}
 
-          {/* สเต็ป 2: แสดงรายละเอียดและยอดเงิน */}
+          {/*แสดงรายละเอียดและยอดเงิน */}
           {selectedCar && !isPaid && (
             <div className="space-y-4">
               <img
