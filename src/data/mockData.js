@@ -345,5 +345,13 @@ export const mockUsers = [
     name: "เจ้าหน้าที่ดูแลระบบ",
     role: "admin",
     permissions: ["live_map", "activity"]
+  },
+  {
+    id: "u-3",
+    username: "staff",
+    password: "password123",
+    name: "เจ้าหน้าที่จอดรถ",
+    role: "staff",
+    permissions: ["live_map"]
   }
 ];

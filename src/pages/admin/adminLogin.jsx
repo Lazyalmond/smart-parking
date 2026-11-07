@@ -27,14 +27,14 @@ export default function AdminLogin({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center p-4 bg-slate-950">
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+    <div className="min-h-[85vh] flex items-center justify-center p-4 bg-[#F5F7FA]">
+      <div className="w-full max-w-md bg-white border border-[#E3E8EF] rounded-3xl p-8 shadow-2xl">
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-emerald-500/20">
+          <div className="w-12 h-12 bg-[#1685F8]/10 text-[#1685F8] rounded-2xl flex items-center justify-center mx-auto mb-3 border border-[#1685F8]/20">
             <Lock size={24} />
           </div>
-          <h2 className="text-xl font-bold text-white">เข้าสู่ระบบ Admin Portal</h2>
-          <p className="text-xs text-slate-400 mt-1">Smart Parking Management System</p>
+          <h2 className="text-xl font-bold text-[#172B4D]">เข้าสู่ระบบผู้ดูแล</h2>
+          <p className="text-xs text-[#5E6C84] mt-1">ระบบจัดการที่จอดรถอัจฉริยะ</p>
         </div>
 
         {errorMsg && (
@@ -46,30 +46,30 @@ export default function AdminLogin({ onLoginSuccess }) {
 
         <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="text-xs text-slate-400 block mb-1.5 font-medium">Username</label>
+            <label className="text-xs text-[#5E6C84] block mb-1.5 font-medium">ชื่อผู้ใช้</label>
             <div className="relative">
-              <User size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+              <User size={16} className="absolute left-3.5 top-3.5 text-[#7A869A]" />
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="superadmin หรือ admin"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-emerald-500 text-xs"
+                className="w-full bg-[#F5F7FA] border border-[#E3E8EF] rounded-xl py-2.5 pl-10 pr-4 text-[#172B4D] focus:outline-none focus:border-[#1685F8] text-xs"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs text-slate-400 block mb-1.5 font-medium">Password</label>
+            <label className="text-xs text-[#5E6C84] block mb-1.5 font-medium">รหัสผ่าน</label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+              <Lock size={16} className="absolute left-3.5 top-3.5 text-[#7A869A]" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="password123"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-emerald-500 text-xs"
+                className="w-full bg-[#F5F7FA] border border-[#E3E8EF] rounded-xl py-2.5 pl-10 pr-4 text-[#172B4D] focus:outline-none focus:border-[#1685F8] text-xs"
                 required
               />
             </div>
@@ -77,16 +77,17 @@ export default function AdminLogin({ onLoginSuccess }) {
 
           <button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl transition text-xs shadow-lg shadow-emerald-950"
+            className="w-full bg-[#1685F8] hover:bg-[#0866C6] text-white font-semibold py-2.5 rounded-xl transition text-xs shadow-lg shadow-blue-950"
           >
             เข้าสู่ระบบ
           </button>
         </form>
 
-        <div className="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-500 text-center space-y-1">
+        <div className="mt-6 pt-4 border-t border-[#E3E8EF] text-[11px] text-[#7A869A] text-center space-y-1">
           <p>บัญชีทดสอบ:</p>
-          <p>Super Admin: <span className="text-slate-300 font-mono">superadmin / password123</span></p>
-          <p>Admin ทั่วไป: <span className="text-slate-300 font-mono">admin / password123</span></p>
+          <p>ผู้ดูแลระบบ: <span className="text-[#172B4D] font-mono">superadmin / password123</span></p>
+          <p>ผู้ดูแลทั่วไป: <span className="text-[#172B4D] font-mono">admin / password123</span></p>
+          <p>เจ้าหน้าที่: <span className="text-[#172B4D] font-mono">staff / password123</span></p>
         </div>
       </div>
     </div>

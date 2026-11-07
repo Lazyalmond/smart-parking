@@ -8,13 +8,13 @@ export default function App() {
   const [currentView, setCurrentView] = useState("user"); // 'user' | 'kiosk' | 'admin'
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F5F7FA] text-[#172B4D] flex flex-col font-sans">
       {/* Top Demo Bar */}
-      <header className="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-40">
+      <header className="bg-white border-b border-[#E3E8EF] px-6 py-3 flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-          <span className="font-bold text-sm tracking-wide text-emerald-400">
-            SMART PARKING PROTOTYPE
+          <span className="w-3 h-3 rounded-full bg-[#1685F8] animate-ping" />
+          <span className="font-bold text-sm tracking-wide text-[#1685F8]">
+            ต้นแบบระบบที่จอดรถอัจฉริยะ
           </span>
         </div>
 
@@ -24,36 +24,36 @@ export default function App() {
             onClick={() => setCurrentView("user")}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
               currentView === "user"
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:text-white"
+                ? "bg-[#1685F8] text-white"
+                : "bg-[#F5F7FA] text-[#5E6C84] hover:text-[#172B4D]"
             }`}
           >
             <Smartphone size={15} />
-            ฝั่ง User (Mobile Web)
+            หน้าผู้ใช้ (มือถือ)
           </button>
 
           <button
             onClick={() => setCurrentView("kiosk")}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
               currentView === "kiosk"
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:text-white"
+                ? "bg-[#1685F8] text-white"
+                : "bg-[#F5F7FA] text-[#5E6C84] hover:text-[#172B4D]"
             }`}
           >
             <MonitorPlay size={15} />
-            ฝั่ง Kiosk & ไม้กั้น
+            จอคีออสก์และไม้กั้น
           </button>
 
           <button
             onClick={() => setCurrentView("admin")}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
               currentView === "admin"
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-800 text-slate-400 hover:text-white"
+                ? "bg-[#1685F8] text-white"
+                : "bg-[#F5F7FA] text-[#5E6C84] hover:text-[#172B4D]"
             }`}
           >
             <ShieldCheck size={15} />
-            ฝั่ง Admin Dashboard
+            หน้าผู้ดูแลระบบ
           </button>
         </nav>
       </header>

@@ -14,5 +14,13 @@ export const mockUsers = [
     name: 'สมชาย (เจ้าหน้าที่)',
     role: 'admin', // เมนูทั่วไป เข้าหน้าจัดการสิทธิ์ไม่ได้
     permissions: ['live_map', 'activity']
+  },
+  {
+    id: 'u-3',
+    username: 'staff',
+    password: 'password123',
+    name: 'เจ้าหน้าที่จอดรถ',
+    role: 'staff',
+    permissions: ['live_map']
   }
 ];
