@@ -10,14 +10,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#172B4D] flex flex-col font-sans">
       {/* Top Demo Bar */}
-      <header className="bg-white border-b border-[#E3E8EF] px-6 py-3 flex items-center justify-between sticky top-0 z-40">
-        <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-[#1685F8] animate-ping" />
-          <span className="font-bold text-sm tracking-wide text-[#1685F8]">
-            ต้นแบบระบบที่จอดรถอัจฉริยะ
-          </span>
-        </div>
-
+      <header className="bg-white border-b border-[#E3E8EF] px-6 py-3 flex items-center justify-center sticky top-0 z-40">
         {/* แถบสลับมุมมอง */}
         <nav className="flex gap-2">
           <button

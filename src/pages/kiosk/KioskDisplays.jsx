@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Camera, CheckCircle2, XCircle, PhoneCall, QrCode, ArrowRight } from 'lucide-react';
 import { mockCars, mockSlots } from '../../data/mockData';
+import { calculateParkingCharge, PARKING_RATE_PER_HOUR } from '../../utils/parkingFee';
 
 export default function KioskDisplays() {
   const [activeTab, setActiveTab] = useState('exit'); // 'entry' หรือ 'exit'
   const [selectedPlate, setSelectedPlate] = useState('1กก-9999');
   const [showQRModal, setShowQRModal] = useState(false);
   const [callingStaff, setCallingStaff] = useState(false);
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 30_000);
+    return () => clearInterval(timer);
+  }, []);
 
   // คำนวณช่องจอดว่างจริงจาก mockSlots
   const emptySlotsCount = mockSlots.filter(s => !s.occupied).length;
   const currentCar = mockCars.find(c => c.plate === selectedPlate) || mockCars[0];
+  const parkingCharge = calculateParkingCharge(currentCar.entryTimestamp, currentTime);
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#172B4D] p-6 flex flex-col items-center">
@@ -22,7 +30,7 @@ export default function KioskDisplays() {
             activeTab === 'entry' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:text-[#172B4D]'
           }`}
         >
-          🖥️ จอไม้กั้นทางเข้า (Entry Gate)
+           จอไม้กั้นทางเข้า (Entry Gate)
         </button>
         <button
           onClick={() => setActiveTab('exit')}
@@ -30,7 +38,7 @@ export default function KioskDisplays() {
             activeTab === 'exit' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:text-white'
           }`}
         >
-          🖥️ จอตู้ Kiosk ขาออก (Exit Kiosk)
+           จอตู้ Kiosk ขาออก (Exit Kiosk)
         </button>
       </div>
 
@@ -115,7 +123,8 @@ export default function KioskDisplays() {
               <p className="text-sm text-[#172B4D]">{currentCar.brand}</p>
               <div className="text-xs text-[#5E6C84] pt-2 border-t border-[#E3E8EF] space-y-1">
                 <div>เวลาเข้า: {currentCar.entryTime} น.</div>
-                <div>อัตราค่าบริการ: {currentCar.hourlyRate} บาท/ชม.</div>
+                <div>อัตราค่าบริการ: {PARKING_RATE_PER_HOUR} บาท/ชั่วโมง</div>
+                <div>คิดค่าจอด: {parkingCharge.billedHours} ชั่วโมง</div>
               </div>
 
               {/* ปุ่ม Intercom เรียกเจ้าหน้าที่ */}
@@ -146,7 +155,7 @@ export default function KioskDisplays() {
                   <XCircle size={64} className="text-rose-400 mx-auto" />
                   <div>
                     <h3 className="text-xl font-bold text-rose-400">ยังไม่ได้ชำระค่าบริการ</h3>
-                    <p className="text-xs text-[#5E6C84] mt-1">มียอดค้างชำระ 60 บาท</p>
+                    <p className="text-xs text-[#5E6C84] mt-1">ยอดค้างชำระ {parkingCharge.amount} บาท</p>
                   </div>
                   <button
                     onClick={() => setShowQRModal(true)}
@@ -168,7 +177,7 @@ export default function KioskDisplays() {
                 <div className="bg-white p-4 rounded-2xl inline-block">
                   <QrCode size={180} className="text-slate-950" />
                 </div>
-                <p className="text-sm font-semibold text-[#1685F8]">ยอดชำระ: 60 บาท</p>
+                <p className="text-sm font-semibold text-[#1685F8]">ยอดชำระ: {parkingCharge.amount} บาท</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => {

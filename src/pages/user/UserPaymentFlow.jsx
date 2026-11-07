@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Car, QrCode, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
 import { mockCars } from '../../data/mockData';
+import { calculateParkingCharge, PARKING_RATE_PER_HOUR } from '../../utils/parkingFee';
 
 export default function UserPaymentFlow() {
   const [searchTerm, setSearchTerm] = useState('');
   const searchInputRef = useRef(null);
   const [selectedCar, setSelectedCar] = useState(null);
   const [isPaid, setIsPaid] = useState(false);
+  const [currentTime, setCurrentTime] = useState(Date.now());
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 นาที = 900 วินาที
 
   // นับถอยหลัง Grace Period 15 นาทีเมื่อชำระเงินสำเร็จ
@@ -17,6 +19,13 @@ export default function UserPaymentFlow() {
     }
     return () => clearInterval(timer);
   }, [isPaid, timeLeft]);
+
+  useEffect(() => {
+    if (!selectedCar || isPaid) return undefined;
+
+    const timer = setInterval(() => setCurrentTime(Date.now()), 30_000);
+    return () => clearInterval(timer);
+  }, [selectedCar, isPaid]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -29,6 +38,7 @@ export default function UserPaymentFlow() {
 
     const found = mockCars.find(c => c.plate.includes(plate));
     if (found) {
+      setCurrentTime(Date.now());
       setSelectedCar(found);
     } else {
       alert('ไม่พบข้อมูลป้ายทะเบียนในระบบ');
@@ -41,6 +51,10 @@ export default function UserPaymentFlow() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const parkingCharge = selectedCar
+    ? calculateParkingCharge(selectedCar.entryTimestamp, currentTime)
+    : null;
+
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#172B4D] flex justify-center p-4">
       {/* Container จำลองจอมือถือ */}
@@ -48,8 +62,7 @@ export default function UserPaymentFlow() {
         
         <div>
           <header className="mb-6 text-center">
-            <h1 className="text-xl font-bold text-[#1685F8]">Smart Parking Payment</h1>
-            <p className="text-xs text-[#5E6C84]">สแกนจากเสา เพื่อค้นหาทะเบียนและชำระเงิน</p>
+            <h1 className="text-xl font-bold text-[#1685F8]">Smart Parking</h1>
           </header>
 
           {/* สเต็ป 1: ค้นหาทะเบียน */}
@@ -99,11 +112,19 @@ export default function UserPaymentFlow() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#5E6C84]">ระยะเวลา:</span>
-                  <span> {selectedCar.entryTime} </span>
+                  <span>
+                    {parkingCharge.durationMinutes < 1
+                      ? 'น้อยกว่า 1 นาที'
+                      : `${Math.floor(parkingCharge.durationMinutes / 60)} ชั่วโมง ${parkingCharge.durationMinutes % 60} นาที`}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#5E6C84]">คิดค่าจอด:</span>
+                  <span>{parkingCharge.billedHours} ชั่วโมง × {PARKING_RATE_PER_HOUR} บาท</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-[#E3E8EF] text-base">
                   <span className="font-bold">ยอดชำระ:</span>
-                  <span className="font-bold text-[#1685F8]">60 บาท</span>
+                  <span className="font-bold text-[#1685F8]">{parkingCharge.amount} บาท</span>
                 </div>
               </div>
 
@@ -114,7 +135,10 @@ export default function UserPaymentFlow() {
               </div>
 
               <button
-                onClick={() => setIsPaid(true)}
+                onClick={() => {
+                  setCurrentTime(Date.now());
+                  setIsPaid(true);
+                }}
                 className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-semibold text-sm transition"
               >
                 จำลองการชำระเงินสำเร็จ
