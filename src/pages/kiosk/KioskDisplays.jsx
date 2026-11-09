@@ -26,16 +26,18 @@ export default function KioskDisplays() {
       <div className="flex gap-2 p-1.5 bg-white border border-[#E3E8EF] rounded-xl mb-6">
         <button
           onClick={() => setActiveTab('entry')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition ${
-            activeTab === 'entry' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:text-[#172B4D]'
+          aria-pressed={activeTab === 'entry'}
+          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1685F8] focus-visible:ring-offset-2 ${
+            activeTab === 'entry' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:bg-[#EAF3FF] hover:text-[#0866C6]'
           }`}
         >
            จอไม้กั้นทางเข้า (Entry Gate)
         </button>
         <button
           onClick={() => setActiveTab('exit')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition ${
-            activeTab === 'exit' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:text-white'
+          aria-pressed={activeTab === 'exit'}
+          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1685F8] focus-visible:ring-offset-2 ${
+            activeTab === 'exit' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84] hover:bg-[#EAF3FF] hover:text-[#0866C6]'
           }`}
         >
            จอตู้ Kiosk ขาออก (Exit Kiosk)
@@ -159,7 +161,7 @@ export default function KioskDisplays() {
                   </div>
                   <button
                     onClick={() => setShowQRModal(true)}
-                    className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition"
+                    className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition  text-white"
                   >
                     <QrCode size={18} />
                     สร้าง Thai QR ชำระเงินหน้าตู้ Kiosk

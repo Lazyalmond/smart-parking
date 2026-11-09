@@ -81,7 +81,7 @@ export default function UserPaymentFlow() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-semibold text-sm transition"
+                className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-semibold text-sm transition text-white"
               >
                 ค้นหารถ
               </button>
