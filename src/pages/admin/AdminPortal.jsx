@@ -2,27 +2,41 @@
 import React, { useState } from 'react';
 import AdminLogin from './adminLogin';
 import AdminDashboard from './AdminDashboard';
+import { mockUsers } from '../../data/mockData';
+
+function getSavedUser() {
+  try {
+    const saved = localStorage.getItem('smart_parking_admin');
+    if (!saved) return null;
+
+    const parsedUser = JSON.parse(saved);
+    // อ่านบัญชีจาก Mock Data ล่าสุด เพื่อให้ role และ companyId ที่แก้ไขใหม่เป็นปัจจุบัน
+    return mockUsers.find((user) => user.username === parsedUser.username) || null;
+  } catch {
+    localStorage.removeItem('smart_parking_admin');
+    return null;
+  }
+}
 
 export default function AdminPortal({ vehicles, slots, setSlots }) {
-  const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('smart_parking_admin');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [currentUser, setCurrentUser] = useState(getSavedUser);
+
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('smart_parking_admin');
     setCurrentUser(null);
   };
 
-  // 1. ถ้ายังไม่ล็อกอิน -> แสดงหน้าฟอร์ม Login
   if (!currentUser) {
-    return <AdminLogin onLoginSuccess={(user) => setCurrentUser(user)} />;
+    return <AdminLogin onLoginSuccess={handleLogin} />;
   }
 
-  // 2. ถ้าล็อกอินแล้ว -> แสดงหน้า Dashboard พร้อมส่งข้อมูล user และ props ต่างๆ ไปทำงานต่อ
   return (
-    <AdminDashboard 
-      currentUser={currentUser} 
+    <AdminDashboard
+      currentUser={currentUser}
       onLogout={handleLogout}
       vehicles={vehicles}
       slots={slots}
