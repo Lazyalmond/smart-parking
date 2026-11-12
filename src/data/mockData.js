@@ -336,6 +336,7 @@ export const mockUsers = [
     password: "password123",
     name: "ผู้ดูแลระบบสูงสุด",
     role: "superadmin",
+    companyId: null,
     permissions: ["live_map", "finance", "activity", "manage_roles"]
   },
   {
@@ -344,6 +345,7 @@ export const mockUsers = [
     password: "password123",
     name: "เจ้าหน้าที่ดูแลระบบ",
     role: "admin",
+    companyId: "company-001",
     permissions: ["live_map", "activity"]
   },
   {
@@ -352,6 +354,37 @@ export const mockUsers = [
     password: "password123",
     name: "เจ้าหน้าที่จอดรถ",
     role: "staff",
+    companyId: "company-001",
     permissions: ["live_map"]
   }
+];
+// ข้อมูลบริษัทที่เช่าใช้ระบบ Auto Parking
+export const mockCompanies = [
+  {
+    id: "company-001",
+    name: "Central Parking",
+    code: "ABC",
+    status: "active",
+    plan: "Premium",
+    branchCount: 2,
+    parkingLotCount: 3,
+  },
+  {
+    id: "company-002",
+    name: "SPU Parking",
+    code: "XYZ",
+    status: "active",
+    plan: "Standard",
+    branchCount: 1,
+    parkingLotCount: 1,
+  },
+  {
+    id: "company-003",
+    name: "Smart Mall Parking",
+    code: "SMP",
+    status: "active",
+    plan: "Enterprise",
+    branchCount: 3,
+    parkingLotCount: 5,
+  },
 ];
