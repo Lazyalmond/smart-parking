@@ -126,8 +126,6 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
     }
   });
   const [selectedRole, setSelectedRole] = useState('admin');
-  const [activeMenu, setActiveMenu] = useState(currentUser?.role === 'staff' ? 'map' : 'overview');
-  const [selectedFloor, setSelectedFloor] = useState('FL1');
   const [companySearch, setCompanySearch] = useState('');
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -153,7 +151,6 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
   const [vehicleSearch, setVehicleSearch] = useState('');
   const [slotModalOpen, setSlotModalOpen] = useState(false);
   const [slotForm, setSlotForm] = useState({ floor: 'FL1', count: 4, isEV: false });
-  const [slotFilter, setSlotFilter] = useState('all');
 
   const userRole = currentUser?.role || 'superadmin';
   const isSuperAdmin = userRole === 'superadmin';
@@ -170,17 +167,19 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
     ? ['live_map', 'finance', 'activity', 'manage_roles']
     : rolePermissions[userRole] || currentUser?.permissions || [];
 
-  const firstAllowedMenu = effectivePermissions.includes('live_map')
-    ? 'map'
-    : effectivePermissions.includes('finance')
-      ? 'finance'
-      : effectivePermissions.includes('activity')
-        ? 'activity'
-        : canAccessRoles ? 'roles' : 'none';
+  const firstAllowedMenu = isSuperAdmin || isCompanyAdmin
+    ? 'overview'
+    : effectivePermissions.includes('live_map')
+      ? 'map'
+      : effectivePermissions.includes('finance')
+        ? 'finance'
+        : effectivePermissions.includes('activity')
+          ? 'activity'
+          : canAccessRoles ? 'roles' : 'none';
+
   const [activeMenu, setActiveMenu] = useState(firstAllowedMenu);
   const [selectedFloor, setSelectedFloor] = useState('FL1');
   const [slotFilter, setSlotFilter] = useState('all');
-
 
   const canAccessMenu = (menu) => {
     if (menu === 'overview') return isSuperAdmin || isCompanyAdmin;
@@ -309,7 +308,6 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
     setCompanyModalOpen(false);
   };
 
-
   const handleAddParkingSlots = (event) => {
     event.preventDefault();
     const count = Math.min(100, Math.max(1, Number(slotForm.count) || 1));
@@ -318,82 +316,6 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
     const nextSlots = [...slots];
     let serial = 1;
     let added = 0;
-
-            {(() => {
-              const floorSlots = mockSlots.filter((slot) => slot.floor === selectedFloor);
-              const occupiedCount = floorSlots.filter((slot) => slot.occupied).length;
-              const availableCount = floorSlots.length - occupiedCount;
-              const visibleSlots = floorSlots.filter((slot) =>
-                slotFilter === 'all' || (slotFilter === 'occupied' ? slot.occupied : !slot.occupied)
-              );
-
-              return (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-3 sm:gap-4">
-                    <div className="rounded-2xl border border-[#E3E8EF] bg-white p-4 sm:p-5">
-                      <p className="text-xs font-medium text-[#5E6C84]">ช่องจอดทั้งหมด</p>
-                      <p className="mt-1 text-2xl font-bold text-[#172B4D]">{floorSlots.length}<span className="ml-1 text-sm font-medium text-[#5E6C84]">ช่อง</span></p>
-                    </div>
-                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-5">
-                      <p className="text-xs font-medium text-emerald-800">ว่าง</p>
-                      <p className="mt-1 text-2xl font-bold text-emerald-700">{availableCount}<span className="ml-1 text-sm font-medium">ช่อง</span></p>
-                    </div>
-                    <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 sm:p-5">
-                      <p className="text-xs font-medium text-rose-800">มีรถจอด</p>
-                      <p className="mt-1 text-2xl font-bold text-rose-700">{occupiedCount}<span className="ml-1 text-sm font-medium">ช่อง</span></p>
-                    </div>
-                  </div>
-
-                  <section className="overflow-hidden rounded-2xl border border-[#E3E8EF] bg-white">
-                    <div className="flex flex-col gap-3 border-b border-[#E3E8EF] p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-                      <div>
-                        <h3 className="font-bold text-[#172B4D]">สถานะช่องจอด ชั้น {selectedFloor === 'FL1' ? '1' : '2'}</h3>
-                        <p className="mt-0.5 text-xs text-[#5E6C84]">เลือกดูช่องว่างหรือช่องที่มีรถจอด</p>
-                      </div>
-                      <div className="flex gap-1 rounded-xl bg-[#F5F7FA] p-1" aria-label="ตัวกรองสถานะช่องจอด">
-                        {[
-                          { key: 'all', label: `ทั้งหมด ${floorSlots.length}` },
-                          { key: 'available', label: `ว่าง ${availableCount}` },
-                          { key: 'occupied', label: `มีรถ ${occupiedCount}` },
-                        ].map((filter) => (
-                          <button
-                            key={filter.key}
-                            type="button"
-                            onClick={() => setSlotFilter(filter.key)}
-                            aria-pressed={slotFilter === filter.key}
-                            className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${slotFilter === filter.key ? 'bg-white text-[#172B4D] shadow-sm' : 'text-[#5E6C84] hover:text-[#172B4D]'}`}
-                          >
-                            {filter.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2.5 p-3 sm:grid-cols-3 sm:gap-3 sm:p-5 lg:grid-cols-4 xl:grid-cols-5">
-                      {visibleSlots.map((slot) => (
-                        <div
-                          key={slot.id}
-                          className={`flex min-h-[112px] flex-col justify-between rounded-xl border p-3.5 transition hover:shadow-sm ${slot.occupied ? 'border-rose-200 bg-rose-50' : 'border-emerald-200 bg-emerald-50'}`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <span className="font-mono text-lg font-bold text-[#172B4D]">{slot.id}</span>
-                            {slot.isEV && <span title="ช่องชาร์จรถไฟฟ้า" aria-label="ช่องชาร์จรถไฟฟ้า" className="rounded-lg bg-sky-100 p-1.5 text-sky-700"><Zap size={15} /></span>}
-                          </div>
-                          <div className={`flex items-center gap-2 text-xs font-semibold ${slot.occupied ? 'text-rose-800' : 'text-emerald-800'}`}>
-                            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${slot.occupied ? 'bg-rose-500' : 'bg-emerald-500'}`} />
-                            {slot.occupied ? 'มีรถจอด' : 'ว่าง'}
-                          </div>
-                        </div>
-                      ))}
-                      {visibleSlots.length === 0 && <p className="col-span-full py-8 text-center text-sm text-[#5E6C84]">ไม่พบช่องจอดในสถานะนี้</p>}
-                    </div>
-                  </section>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
 
     while (added < count) {
       const id = `${prefix}-${String(serial).padStart(2, '0')}`;
@@ -572,41 +494,32 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
         </SectionCard>
       )}
 
-
       {companyModalOpen && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-label={editingCompanyId ? 'แก้ไขบริษัท' : 'เพิ่มบริษัท'}>
           <form onSubmit={handleCompanySubmit} className="w-full max-w-xl rounded-2xl border border-[#E3E8EF] bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#E3E8EF] px-5 py-4"><div><h2 className="text-base font-bold text-[#172B4D]">{editingCompanyId ? 'แก้ไขข้อมูลบริษัท' : 'เพิ่มบริษัทใหม่'}</h2><p className="mt-1 text-xs text-[#7A869A]">ข้อมูลจะบันทึกใน Mock Data ของเบราว์เซอร์นี้</p></div><button type="button" onClick={() => setCompanyModalOpen(false)} className="rounded-lg p-2 text-[#7A869A] hover:bg-[#F5F7FA]" aria-label="ปิด"><X size={18} /></button></div>
+            <div className="flex items-center justify-between border-b border-[#E3E8EF] px-5 py-4">
+              <div>
+                <h2 className="text-base font-bold text-[#172B4D]">{editingCompanyId ? 'แก้ไขข้อมูลบริษัท' : 'เพิ่มบริษัทใหม่'}</h2>
+                <p className="mt-1 text-xs text-[#7A869A]">ข้อมูลจะบันทึกใน Mock Data ของเบราว์เซอร์นี้</p>
+              </div>
+              <button type="button" onClick={() => setCompanyModalOpen(false)} className="rounded-lg p-2 text-[#7A869A] hover:bg-[#F5F7FA]" aria-label="ปิด"><X size={18} /></button>
+            </div>
             <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
               <label className="space-y-1.5 sm:col-span-2"><span className="text-xs font-semibold text-[#5E6C84]">ชื่อบริษัท</span><input required value={companyForm.name} onChange={(event) => setCompanyForm({ ...companyForm, name: event.target.value })} placeholder="เช่น Metro Parking" className="w-full rounded-lg border border-[#E3E8EF] px-3 py-2.5 text-sm outline-none focus:border-[#1685F8]" /></label>
               <label className="space-y-1.5"><span className="text-xs font-semibold text-[#5E6C84]">รหัสบริษัท</span><input required value={companyForm.code} onChange={(event) => setCompanyForm({ ...companyForm, code: event.target.value.toUpperCase() })} placeholder="เช่น MTP" className="w-full rounded-lg border border-[#E3E8EF] px-3 py-2.5 text-sm uppercase outline-none focus:border-[#1685F8]" /></label>
               <label className="space-y-1.5"><span className="text-xs font-semibold text-[#5E6C84]">แพ็กเกจ</span><select value={companyForm.plan} onChange={(event) => setCompanyForm({ ...companyForm, plan: event.target.value })} className="w-full rounded-lg border border-[#E3E8EF] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1685F8]"><option>Standard</option><option>Premium</option><option>Enterprise</option></select></label>
               <label className="space-y-1.5"><span className="text-xs font-semibold text-[#5E6C84]">จำนวนสาขา</span><input type="number" min="0" value={companyForm.branchCount} onChange={(event) => setCompanyForm({ ...companyForm, branchCount: event.target.value })} className="w-full rounded-lg border border-[#E3E8EF] px-3 py-2.5 text-sm outline-none focus:border-[#1685F8]" /></label>
               <label className="space-y-1.5"><span className="text-xs font-semibold text-[#5E6C84]">จำนวนลานจอด</span><input type="number" min="0" value={companyForm.parkingLotCount} onChange={(event) => setCompanyForm({ ...companyForm, parkingLotCount: event.target.value })} className="w-full rounded-lg border border-[#E3E8EF] px-3 py-2.5 text-sm outline-none focus:border-[#1685F8]" /></label>
-
-        {/* ================= 3. รายงานกิจกรรม & Heatmap ================= */}
-        {activeMenu === 'activity' && canAccessMenu('activity') && (
-          <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-xl font-bold">รายงานการใช้งานและความหนาแน่น</h2>
-                <p className="text-xs text-[#5E6C84]">สถิติความหนาแน่นรายช่องจอด และรุ่นรถยนต์ยอดนิยม</p>
-              </div>
-              <button
-                onClick={() => exportData('กิจกรรม')}
-                className="flex w-fit items-center gap-2 bg-white hover:bg-[#F5F7FA] px-4 py-2.5 rounded-xl text-xs font-semibold border border-[#E3E8EF]"
-              >
-                <Download size={14} /> ดาวน์โหลดข้อมูล
-              </button>
-
             </div>
-            <div className="flex justify-end gap-2 border-t border-[#E3E8EF] px-5 py-4"><button type="button" onClick={() => setCompanyModalOpen(false)} className="rounded-lg border border-[#E3E8EF] px-4 py-2.5 text-sm font-semibold text-[#5E6C84] hover:bg-[#F5F7FA]">ยกเลิก</button><button type="submit" className="rounded-lg bg-[#1685F8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0866C6]">{editingCompanyId ? 'บันทึกการแก้ไข' : 'เพิ่มบริษัท'}</button></div>
+            <div className="flex justify-end gap-2 border-t border-[#E3E8EF] px-5 py-4">
+              <button type="button" onClick={() => setCompanyModalOpen(false)} className="rounded-lg border border-[#E3E8EF] px-4 py-2.5 text-sm font-semibold text-[#5E6C84] hover:bg-[#F5F7FA]">ยกเลิก</button>
+              <button type="submit" className="rounded-lg bg-[#1685F8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0866C6]">{editingCompanyId ? 'บันทึกการแก้ไข' : 'เพิ่มบริษัท'}</button>
+            </div>
           </form>
         </div>
       )}
     </div>
   );
-
 
   const renderMap = () => {
     const floorOptions = [...new Set([...slots.map((slot) => slot.floor), 'FL1', 'FL2'])].filter(Boolean).sort();
@@ -639,102 +552,6 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap gap-2">{floorOptions.map((floor) => <button key={floor} onClick={() => { setSelectedFloor(floor); setSlotForm((previous) => ({ ...previous, floor })); }} className={`rounded-lg border px-4 py-2 text-sm font-semibold ${selectedFloor === floor ? 'border-[#1685F8] bg-[#1685F8] text-white' : 'border-[#E3E8EF] bg-white text-[#5E6C84] hover:bg-[#F5F7FA]'}`}>{floor === 'FL1' ? 'ชั้น 1' : floor === 'FL2' ? 'ชั้น 2' : floor}</button>)}</div>
             <div className="flex flex-wrap gap-1 rounded-lg border border-[#E3E8EF] bg-[#F5F7FA] p-1">{[{ id: 'all', label: 'ทั้งหมด' }, { id: 'occupied', label: 'มีรถจอด' }, { id: 'available', label: 'ว่าง' }, { id: 'ev', label: 'EV' }].map((filter) => <button key={filter.id} onClick={() => setSlotFilter(filter.id)} className={`rounded-md px-3 py-2 text-xs font-semibold ${slotFilter === filter.id ? 'bg-white text-[#1685F8] shadow-sm' : 'text-[#5E6C84]'}`}>{filter.label}</button>)}</div>
-
-            {(() => {
-              const vehicleCount = mockCarBrands.reduce((sum, car) => sum + car.count, 0);
-              const averageHours = mockCarBrands.length
-                ? (mockCarBrands.reduce((sum, car) => sum + car.avgHours * car.count, 0) / (vehicleCount || 1)).toFixed(1)
-                : '0.0';
-              const busySlots = mockSlotHeatmap.filter((item) => item.density > 80).length;
-
-              return (
-                <>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-                    <div className="rounded-2xl border border-[#E3E8EF] bg-white p-4 sm:p-5">
-                      <p className="text-xs font-medium text-[#5E6C84]">รถที่เข้าใช้บริการ</p>
-                      <p className="mt-1 text-2xl font-bold text-[#172B4D]">{vehicleCount}<span className="ml-1 text-sm font-medium text-[#5E6C84]">คัน</span></p>
-                    </div>
-                    <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 sm:p-5">
-                      <p className="text-xs font-medium text-sky-800">เวลาจอดเฉลี่ย</p>
-                      <p className="mt-1 text-2xl font-bold text-sky-700">{averageHours}<span className="ml-1 text-sm font-medium">ชม.</span></p>
-                    </div>
-                    <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 sm:p-5">
-                      <p className="text-xs font-medium text-rose-800">ช่องที่มีความหนาแน่นสูง</p>
-                      <p className="mt-1 text-2xl font-bold text-rose-700">{busySlots}<span className="ml-1 text-sm font-medium">ช่อง</span></p>
-                    </div>
-                  </div>
-
-            {/* Heatmap ช่องจอด */}
-            <div className="bg-white border border-[#E3E8EF] p-4 sm:p-6 rounded-2xl space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-[#172B4D]">แผนผังความหนาแน่นของช่องจอด</h3>
-                  <p className="mt-1 text-xs text-[#5E6C84]">เปอร์เซ็นต์ยิ่งสูง หมายถึงช่องจอดถูกใช้งานบ่อย</p>
-                </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-medium text-[#5E6C84]">
-                  <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-emerald-500" />ต่ำ · 0–50%</span>
-                  <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-amber-500" />ปานกลาง · 51–80%</span>
-                  <span className="flex items-center gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-rose-500" />สูง · 81–100%</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {mockSlotHeatmap.map((item) => {
-                  let color = 'bg-emerald-50 border-emerald-200 text-emerald-800';
-                  let barColor = 'bg-emerald-500';
-                  if (item.density > 80) {
-                    color = 'bg-rose-50 border-rose-200 text-rose-800';
-                    barColor = 'bg-rose-500';
-                  } else if (item.density > 50) {
-                    color = 'bg-amber-50 border-amber-200 text-amber-800';
-                    barColor = 'bg-amber-500';
-                  }
-
-                  return (
-                    <div key={item.slot} className={`rounded-xl border p-4 ${color}`}>
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-sm font-bold text-[#172B4D]">{item.slot}</span>
-                        <span className="text-lg font-bold">{item.density}<span className="text-xs">%</span></span>
-                      </div>
-                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/80" role="progressbar" aria-label={`ความหนาแน่น ${item.slot}`} aria-valuenow={item.density} aria-valuemin={0} aria-valuemax={100}>
-                        <div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(100, Math.max(0, item.density))}%` }} />
-                      </div>
-                      <span className="mt-2 block text-[11px] font-medium">{item.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* สถิติรุ่นรถ */}
-            <div className="bg-white border border-[#E3E8EF] p-4 sm:p-6 rounded-2xl space-y-4">
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                <CarFront size={16} /> สถิติรุ่นรถและระยะเวลาจอดเฉลี่ย
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[480px] text-left text-xs">
-                  <thead className="bg-[#F5F7FA] text-[#5E6C84]">
-                    <tr>
-                      <th className="py-2">รุ่นรถยนต์</th>
-                      <th>จำนวนรถที่เข้ามา</th>
-                      <th>จอดเฉลี่ย (ชม.)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E3E8EF]">
-                    {mockCarBrands.map((car, idx) => (
-                      <tr key={idx} className="hover:bg-[#F5F7FA]/70">
-                        <td className="py-3 font-semibold text-[#172B4D]">{car.brand}</td>
-                        <td className="font-mono font-semibold text-[#1685F8]">{car.count} คัน</td>
-                        <td className="font-mono text-[#5E6C84]">{car.avgHours} ชั่วโมง</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-                </>
-              );
-            })()}
-
           </div>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3"><div className="rounded-lg bg-[#F5F7FA] p-3"><p className="text-xs text-[#7A869A]">ช่องจอดในชั้นนี้</p><p className="mt-1 text-xl font-bold text-[#172B4D]">{floorSlots.length}</p></div><div className="rounded-lg bg-[#F5F7FA] p-3"><p className="text-xs text-[#7A869A]">มีรถจอด</p><p className="mt-1 text-xl font-bold text-slate-600">{occupiedOnFloor}</p></div><div className="rounded-lg bg-[#F5F7FA] p-3"><p className="text-xs text-[#7A869A]">ว่างพร้อมจอด</p><p className="mt-1 text-xl font-bold text-[#1685F8]">{availableOnFloor}</p></div></div>
         </SectionCard>
