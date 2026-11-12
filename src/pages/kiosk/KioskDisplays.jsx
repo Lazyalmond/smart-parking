@@ -4,7 +4,7 @@ import { mockCars, mockSlots } from '../../data/mockData';
 import { calculateParkingCharge, PARKING_RATE_PER_HOUR } from '../../utils/parkingFee';
 
 export default function KioskDisplays() {
-  const [activeTab, setActiveTab] = useState('exit'); // 'entry' หรือ 'exit'
+  const [activeTab, setActiveTab] = useState('exit'); // entry หรือ exit
   const [selectedPlate, setSelectedPlate] = useState('1กก-9999');
   const [showQRModal, setShowQRModal] = useState(false);
   const [callingStaff, setCallingStaff] = useState(false);
@@ -65,10 +65,6 @@ export default function KioskDisplays() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div className="relative rounded-2xl overflow-hidden border border-[#E3E8EF] bg-black">
               <img src={currentCar.image} alt="CCTV Scan" className="w-full h-64 object-cover opacity-80" />
-              <div className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2.5 py-1 rounded-md font-mono flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                CCTV LIVE
-              </div>
             </div>
 
             <div className="bg-[#F5F7FA] p-6 rounded-2xl border border-[#E3E8EF] space-y-4">
