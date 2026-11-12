@@ -190,6 +190,17 @@ export default function UserPaymentFlow() {
                 <p>กรอกหมายเลขทะเบียนรถ เพื่อดูตำแหน่งจอดและตรวจสอบค่าบริการ</p>
               </div>
 
+              <button
+                type="submit"
+                className="w-full bg-[#1685F8] hover:bg-[#0866C6] py-3 rounded-xl font-semibold text-sm transition text-white"
+              >
+                ค้นหารถ
+              </button>
+              <p className="text-xs text-[#7A869A] text-center">1กก-9999 หรือ 2ขข-1234</p>
+            </form>
+          )}
+
+
               <section className="search-panel">
                 <div className="search-panel-heading">
                   <div className="section-kicker">ค้นหาด้วยทะเบียนรถ</div>
