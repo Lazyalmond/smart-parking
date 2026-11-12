@@ -198,6 +198,7 @@ export default function UserPaymentFlow() {
               </button>
               <p className="text-xs text-[#7A869A] text-center">1กก-9999 หรือ 2ขข-1234</p>
             </form>
+      </section>
           )}
 
 
