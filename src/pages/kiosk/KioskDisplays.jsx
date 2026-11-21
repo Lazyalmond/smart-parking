@@ -5,7 +5,7 @@ import { calculateParkingCharge, PARKING_RATE_PER_HOUR } from '../../utils/parki
 
 export default function KioskDisplays() {
   const [activeTab, setActiveTab] = useState('exit'); // entry หรือ exit
-  const [selectedPlate, setSelectedPlate] = useState('1กก-9999');
+  const [selectedPlate, setSelectedPlate] = useState('1กก9999');
   const [showQRModal, setShowQRModal] = useState(false);
   const [callingStaff, setCallingStaff] = useState(false);
   const [currentTime, setCurrentTime] = useState(Date.now());
@@ -17,7 +17,8 @@ export default function KioskDisplays() {
 
   // คำนวณช่องจอดว่างจริงจาก mockSlots
   const emptySlotsCount = mockSlots.filter(s => !s.occupied).length;
-  const currentCar = mockCars.find(c => c.plate === selectedPlate) || mockCars[0];
+  const selectedCar = mockCars.find(c => c.plate.replace(/[\s-]/g, '') === selectedPlate) || mockCars[0];
+  const currentCar = selectedPlate === '2ขข1234' ? { ...selectedCar, paid: true } : selectedCar;
   const parkingCharge = calculateParkingCharge(currentCar.entryTimestamp, currentTime);
 
   return (
@@ -56,9 +57,9 @@ export default function KioskDisplays() {
               </div>
             </div>
             {/* ป้ายไฟดิจิทัลแสดงช่องจอดว่าง */}
-            <div className="bg-[#172B4D] border-2 border-[#1685F8]/50 px-6 py-3 rounded-2xl text-center">
-              <span className="text-xs text-white/80 block font-semibold">ช่องจอดว่างทั้งหมด</span>
-              <span className="text-4xl font-black font-sans text-[#1685F8]">{emptySlotsCount} คัน</span>
+            <div className="bg-sky-50 border-2 border-sky-200 px-6 py-3 rounded-2xl text-center">
+              <span className="text-xs text-sky-800 block font-semibold">ช่องจอดว่างทั้งหมด</span>
+              <span className="text-4xl font-black font-sans text-sky-600">{emptySlotsCount} คัน</span>
             </div>
           </div>
 
@@ -81,6 +82,18 @@ export default function KioskDisplays() {
                 <CheckCircle2 size={20} />
                 <span className="text-sm font-semibold">บันทึกเวลาเข้าเรียบร้อย ไม้กั้นเปิดอัตโนมัติ</span>
               </div>
+              <button
+                onClick={() => {
+                  setCallingStaff(true);
+                  setTimeout(() => setCallingStaff(false), 3000);
+                }}
+                className={`w-full rounded-xl border-2 py-3 text-xs font-bold flex items-center justify-center gap-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1685F8] focus-visible:ring-offset-2 ${
+                  callingStaff ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-[#1685F8] bg-white text-[#0866C6] hover:bg-[#EAF3FF]'
+                }`}
+              >
+                <PhoneCall size={16} />
+                {callingStaff ? 'กำลังเชื่อมต่อเจ้าหน้าที่...' : 'กดเรียกเจ้าหน้าที่'}
+              </button>
             </div>
           </div>
         </div>
@@ -99,16 +112,16 @@ export default function KioskDisplays() {
             <div className="flex items-center gap-2 text-xs bg-[#F5F7FA] p-2 rounded-xl border border-[#E3E8EF]">
               <span className="text-[#5E6C84]">สลับรถทดสอบ:</span>
               <button
-                onClick={() => setSelectedPlate('2ขข-1234')}
-                className={`px-2.5 py-1 rounded ${selectedPlate === '2ขข-1234' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84]'}`}
+                onClick={() => setSelectedPlate('2ขข1234')}
+                className={`px-2.5 py-1 rounded ${selectedPlate === '2ขข1234' ? 'bg-[#1685F8] text-white' : 'text-[#5E6C84]'}`}
               >
-                2ขข-1234 (จ่ายแล้ว)
+                2ขข1234 (จ่ายแล้ว)
               </button>
               <button
-                onClick={() => setSelectedPlate('1กก-9999')}
-                className={`px-2.5 py-1 rounded ${selectedPlate === '1กก-9999' ? 'bg-amber-600 text-white' : 'text-[#5E6C84]'}`}
+                onClick={() => setSelectedPlate('1กก9999')}
+                className={`px-2.5 py-1 rounded ${selectedPlate === '1กก9999' ? 'bg-amber-600 text-white' : 'text-[#5E6C84]'}`}
               >
-                1กก-9999 (ยังไม่จ่าย)
+                1กก9999 (ยังไม่จ่าย)
               </button>
             </div>
           </div>
@@ -131,8 +144,8 @@ export default function KioskDisplays() {
                   setCallingStaff(true);
                   setTimeout(() => setCallingStaff(false), 3000);
                 }}
-                className={`w-full mt-4 py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition ${
-                  callingStaff ? 'bg-amber-500 text-slate-950' : 'bg-[#F5F7FA] hover:bg-[#E3E8EF] text-[#172B4D]'
+                className={`w-full mt-4 rounded-xl border-2 py-3 text-xs font-bold flex items-center justify-center gap-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1685F8] focus-visible:ring-offset-2 ${
+                  callingStaff ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-[#1685F8] bg-white hover:bg-[#EAF3FF] text-[#0866C6]'
                 }`}
               >
                 <PhoneCall size={16} />

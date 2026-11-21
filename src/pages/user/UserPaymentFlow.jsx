@@ -58,7 +58,7 @@ function getSlotZone(slotId) {
   return slotId?.split('-')[0] || '—';
 }
 
-export default function UserPaymentFlow() {
+export default function UserPaymentFlow({ vehicles = mockCars, onPaymentSuccess }) {
   const [activeTab, setActiveTab] = useState('search');
   const [screen, setScreen] = useState('search');
   const [searchTerm, setSearchTerm] = useState('');
@@ -104,8 +104,9 @@ export default function UserPaymentFlow() {
       return;
     }
 
-    const found = mockCars.filter((car) =>
-      car.plate.replace(/[\s-]/g, '').toLocaleLowerCase('th-TH') === plate,
+    const found = vehicles.filter((car) =>
+      !car.paid
+      && car.plate.replace(/[\s-]/g, '').toLocaleLowerCase('th-TH') === plate,
     );
 
     if (found.length === 0) {
@@ -149,6 +150,7 @@ export default function UserPaymentFlow() {
       location: PARKING_LOCATION,
     };
     setPaymentHistory((previous) => [transaction, ...previous]);
+    onPaymentSuccess?.(selectedCar.id);
     setCurrentTime(paidAt);
     setTimeLeft(GRACE_PERIOD_SECONDS);
     setScreen('success');
@@ -201,7 +203,7 @@ export default function UserPaymentFlow() {
                       type="text"
                       inputMode="text"
                       autoComplete="off"
-                      placeholder="เช่น 1กก-9999"
+                      placeholder="เช่น 1กก9999"
                       value={searchTerm}
                       onChange={(event) => {
                         setSearchTerm(event.target.value);
@@ -237,8 +239,8 @@ export default function UserPaymentFlow() {
 
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-[#7A869A]">
                   <span>ทะเบียนตัวอย่าง</span>
-                  <button type="button" className="rounded border border-[#E3E8EF] bg-[#F5F7FA] px-2 py-1 text-[11px] font-medium text-[#5E6C84] hover:bg-[#F5F7FA]" onClick={() => { setSearchTerm('1กก-9999'); setSearchError(''); }}>1กก-9999</button>
-                  <button type="button" onClick={() => { setSearchTerm('2ขข-1234'); setSearchError(''); }}>2ขข-1234</button>
+                  <button type="button" className="rounded border border-[#E3E8EF] bg-[#F5F7FA] px-2 py-1 text-[11px] font-medium text-[#5E6C84] hover:bg-[#F5F7FA]" onClick={() => { setSearchTerm('1กก9999'); setSearchError(''); }}>1กก9999</button>
+                  <button type="button" onClick={() => { setSearchTerm('2ขข1234'); setSearchError(''); }}>2ขข1234</button>
                 </div>
               </section>
 

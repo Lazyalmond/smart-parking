@@ -5,22 +5,35 @@ import AdminPortal from "./pages/admin/AdminPortal";
 import { Smartphone, MonitorPlay, ShieldCheck } from "lucide-react";
 import { mockCars, mockSlots } from "./data/mockData";
 
-function loadSavedSlots() {
+function loadSavedCars() {
   try {
-    const saved = JSON.parse(localStorage.getItem("smart_parking_slots") || "null");
-    return Array.isArray(saved) ? saved : mockSlots;
+    const savedPaidIds = JSON.parse(localStorage.getItem("smart-parking-paid-car-ids") || "[]");
+    const paidIds = new Set(Array.isArray(savedPaidIds) ? savedPaidIds : []);
+    return mockCars.map((car) => ({ ...car, paid: car.id === "car-1" ? false : car.paid || paidIds.has(car.id) }));
   } catch {
-    return mockSlots;
+    return mockCars;
   }
 }
 
 export default function App() {
   const [currentView, setCurrentView] = useState("user");
-  const [slots, setSlots] = useState(loadSavedSlots);
+  const [slots, setSlots] = useState(mockSlots);
+  const [cars, setCars] = useState(loadSavedCars);
+
+  const handlePaymentSuccess = (carId) => {
+    setCars((previous) => {
+      const next = previous.map((car) => car.id === carId ? { ...car, paid: true } : car);
+      try {
+        localStorage.setItem("smart-parking-paid-car-ids", JSON.stringify(next.filter((car) => car.paid).map((car) => car.id)));
+      } catch {
+        // Keep the updated state for the current app session.
+      }
+      return next;
+    });
+  };
 
   const handleSlotsChange = (nextSlots) => {
     setSlots(nextSlots);
-    localStorage.setItem("smart_parking_slots", JSON.stringify(nextSlots));
   };
 
   return (
@@ -50,10 +63,10 @@ export default function App() {
       </header>
 
       <main className="flex-1">
-        {currentView === "user" && <UserPaymentFlow />}
+        {currentView === "user" && <UserPaymentFlow vehicles={cars} onPaymentSuccess={handlePaymentSuccess} />}
         {currentView === "kiosk" && <KioskDisplays />}
         {currentView === "admin" && (
-          <AdminPortal vehicles={mockCars} slots={slots} setSlots={handleSlotsChange} />
+          <AdminPortal vehicles={cars} slots={slots} setSlots={handleSlotsChange} />
         )}
       </main>
     </div>

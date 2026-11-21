@@ -1,5 +1,5 @@
 import { PageHeading, StatCard, SectionCard, StatusBadge, formatNumber } from '../components/AdminShared.jsx';
-import { Building2, CheckCircle2, MapPin, CarFront, ChevronRight } from 'lucide-react';
+import { Building2, CheckCircle2, CarFront, ChevronRight } from 'lucide-react';
 
 export default function AdminOverviewPage(props) {
   const { isSuperAdmin, company, companyStats, companies, selectMenu, occupiedSlots, freeSlots, slots } = props;
@@ -16,11 +16,9 @@ export default function AdminOverviewPage(props) {
 
       {isSuperAdmin ? (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <StatCard label="อาคารทั้งหมด" value={formatNumber(companyStats.totalCompanies)} hint="อาคารที่ลงทะเบียนในระบบ" icon={Building2} />
             <StatCard label="อาคารที่ใช้งาน" value={formatNumber(companyStats.activeCompanies)} hint="สถานะ Active" icon={CheckCircle2} tone="green" />
-            <StatCard label="สาขาทั้งหมด" value={formatNumber(companyStats.totalBranches)} hint="รวมทุกอาคาร" icon={MapPin} />
-            <StatCard label="ลานจอดทั้งหมด" value={formatNumber(companyStats.totalLots)} hint="รวมทุกอาคาร" icon={CarFront} />
           </div>
           <SectionCard
             title="อาคารในระบบ"
@@ -56,9 +54,7 @@ export default function AdminOverviewPage(props) {
         </>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard label="ลานจอดในอาคาร" value={formatNumber(company.parkingLotCount || 0)} hint="ทุกลานจอดที่ลงทะเบียน" icon={CarFront} />
-            <StatCard label="สาขา" value={formatNumber(company.branchCount || 0)} hint="สาขาภายใต้อาคาร" icon={MapPin} />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <StatCard label="ช่องจอดที่มีรถ" value={formatNumber(occupiedSlots)} hint="จากข้อมูลตัวอย่างปัจจุบัน" icon={CarFront} tone="amber" />
             <StatCard label="ช่องจอดว่าง" value={formatNumber(freeSlots)} hint="จากข้อมูลตัวอย่างปัจจุบัน" icon={CheckCircle2} tone="green" />
           </div>

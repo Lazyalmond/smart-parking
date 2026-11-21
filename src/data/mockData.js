@@ -3,7 +3,7 @@ export const mockCars = [
   {
     id: "car-1",
     province: "กรุงเทพมหานคร",
-    plate: "1กก-9999",
+    plate: "1กก9999",
     brand: "Honda Civic FE",
     entryTime: "10:15",
     entryTimestamp: new Date(Date.now() - 2.5 * 3600 * 1000).toISOString(),
@@ -17,35 +17,35 @@ export const mockCars = [
   {
     id: "car-2",
     province: "เชียงใหม่",
-    plate: "2ขข-1234",
+    plate: "2ขข1234",
     brand: "Toyota Camry",
     entryTime: "08:30",
     entryTimestamp: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
     floor: "ชั้น 1",
     slotId: "A-12",
     hourlyRate: 30,
-    paid: true,
+    paid: false,
     image:
       "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&auto=format&fit=crop",
   },
   {
-    id: "car-2",
+    id: "car-3",
     province: "ราชบุรี",
-    plate: "2ขข-1234",
-    brand: "Toyota Camry",
+    plate: "2ขข1234",
+    brand: "Toyota",
     entryTime: "08:30",
     entryTimestamp: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
     floor: "ชั้น 1",
-    slotId: "A-12",
+    slotId: "A-19",
     hourlyRate: 30,
-    paid: true,
+    paid: false,
     image:
       "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&auto=format&fit=crop",
   },
   {
     id: "car-9",
     province: "ชลบุรี",
-    plate: "3ขพ-8821",
+    plate: "3ขพ8821",
     brand: "Honda CR-V e:HEV",
     entryTime: "08:10",
     entryTimestamp: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
@@ -59,7 +59,7 @@ export const mockCars = [
   {
     id: "car-10",
     province: "นนทบุรี",
-    plate: "8กฮ-4321",
+    plate: "8กฮ4321",
     brand: "Toyota Corolla Cross",
     entryTime: "09:40",
     entryTimestamp: new Date(Date.now() - 3.0 * 3600 * 1000).toISOString(),
@@ -73,7 +73,7 @@ export const mockCars = [
   {
     id: "car-11",
     province: "ภูเก็ต",
-    plate: "1ขบ-6712",
+    plate: "1ขบ6712",
     brand: "Porsche Macan",
     entryTime: "07:15",
     entryTimestamp: new Date(Date.now() - 5.5 * 3600 * 1000).toISOString(),
@@ -87,7 +87,7 @@ export const mockCars = [
   {
     id: "car-12",
     province: "ขอนแก่น",
-    plate: "5ขม-9087",
+    plate: "5ขม9087",
     brand: "Nissan Kicks e-POWER",
     entryTime: "11:20",
     entryTimestamp: new Date(Date.now() - 1.3 * 3600 * 1000).toISOString(),
@@ -101,7 +101,7 @@ export const mockCars = [
   {
     id: "car-13",
     province: "นครราชสีมา",
-    plate: "4กศ-2345",
+    plate: "4กศ2345",
     brand: "MG4 Electric",
     entryTime: "10:50",
     entryTimestamp: new Date(Date.now() - 1.8 * 3600 * 1000).toISOString(),
@@ -115,7 +115,7 @@ export const mockCars = [
   {
     id: "car-14",
     province: "ปทุมธานี",
-    plate: "2ขจ-1199",
+    plate: "2ขจ1199",
     brand: "Audi A5 Sportback",
     entryTime: "08:55",
     entryTimestamp: new Date(Date.now() - 3.7 * 3600 * 1000).toISOString(),
@@ -129,7 +129,7 @@ export const mockCars = [
   {
     id: "car-15",
     province: "สมุทรปราการ",
-    plate: "9กบ-6543",
+    plate: "9กบ6543",
     brand: "Toyota Fortuner Legender",
     entryTime: "06:40",
     entryTimestamp: new Date(Date.now() - 6.0 * 3600 * 1000).toISOString(),
@@ -143,7 +143,7 @@ export const mockCars = [
   {
     id: "car-16",
     province: "เชียงราย",
-    plate: "6ขล-7734",
+    plate: "6ขล7734",
     brand: "Volvo XC60 Recharge",
     entryTime: "09:05",
     entryTimestamp: new Date(Date.now() - 3.5 * 3600 * 1000).toISOString(),
@@ -157,7 +157,7 @@ export const mockCars = [
   {
     id: "car-17",
     province: "ระยอง",
-    plate: "3กว-3210",
+    plate: "3กว3210",
     brand: "Isuzu D-Max Stealth",
     entryTime: "05:50",
     entryTimestamp: new Date(Date.now() - 6.8 * 3600 * 1000).toISOString(),
@@ -171,7 +171,7 @@ export const mockCars = [
   {
     id: "car-18",
     province: "พระนครศรีอยุธยา",
-    plate: "7ขต-5544",
+    plate: "7ขต5544",
     brand: "Hyundai IONIQ 5",
     entryTime: "11:05",
     entryTimestamp: new Date(Date.now() - 1.6 * 3600 * 1000).toISOString(),
@@ -185,7 +185,7 @@ export const mockCars = [
   {
     id: "car-19",
     province: "สงขลา",
-    plate: "8ขช-2891",
+    plate: "8ขช2891",
     brand: "Subaru Forester",
     entryTime: "10:00",
     entryTimestamp: new Date(Date.now() - 2.6 * 3600 * 1000).toISOString(),
@@ -199,7 +199,7 @@ export const mockCars = [
   {
     id: "car-20",
     province: "นครปฐม",
-    plate: "1ฌง-4509",
+    plate: "1ฌง4509",
     brand: "Lexus NX 350h",
     entryTime: "08:15",
     entryTimestamp: new Date(Date.now() - 4.4 * 3600 * 1000).toISOString(),
@@ -213,7 +213,7 @@ export const mockCars = [
   {
     id: "car-21",
     province: "สุราษฎร์ธานี",
-    plate: "4ขฉ-9812",
+    plate: "4ขฉ9812",
     brand: "Honda City Hatchback",
     entryTime: "12:00",
     entryTimestamp: new Date(Date.now() - 0.6 * 3600 * 1000).toISOString(),
@@ -227,7 +227,7 @@ export const mockCars = [
   {
     id: "car-22",
     province: "อุดรธานี",
-    plate: "2กด-8877",
+    plate: "2กด8877",
     brand: "Toyota Yaris Ativ",
     entryTime: "09:10",
     entryTimestamp: new Date(Date.now() - 3.4 * 3600 * 1000).toISOString(),
@@ -241,7 +241,7 @@ export const mockCars = [
   {
     id: "car-23",
     province: "พิษณุโลก",
-    plate: "5ฮภ-6006",
+    plate: "5ฮภ6006",
     brand: "Porsche Taycan 4S",
     entryTime: "07:30",
     entryTimestamp: new Date(Date.now() - 5.1 * 3600 * 1000).toISOString(),
@@ -255,7 +255,7 @@ export const mockCars = [
   {
     id: "car-24",
     province: "บุรีรัมย์",
-    plate: "9ขร-1478",
+    plate: "9ขร1478",
     brand: "GWM Ora Good Cat",
     entryTime: "11:35",
     entryTimestamp: new Date(Date.now() - 1.1 * 3600 * 1000).toISOString(),
@@ -269,7 +269,7 @@ export const mockCars = [
   {
     id: "car-25",
     province: "ลำปาง",
-    plate: "6ขด-3369",
+    plate: "6ขด3369",
     brand: "MINI Cooper S Countryman",
     entryTime: "10:30",
     entryTimestamp: new Date(Date.now() - 2.1 * 3600 * 1000).toISOString(),
@@ -283,7 +283,7 @@ export const mockCars = [
   {
     id: "car-26",
     province: "ตรัง",
-    plate: "7กต-4400",
+    plate: "7กต4400",
     brand: "Mazda CX-30",
     entryTime: "08:40",
     entryTimestamp: new Date(Date.now() - 3.9 * 3600 * 1000).toISOString(),
@@ -297,7 +297,7 @@ export const mockCars = [
   {
     id: "car-27",
     province: "กาญจนบุรี",
-    plate: "1ขบ-9988",
+    plate: "1ขบ9988",
     brand: "Tesla Model 3 Highland",
     entryTime: "12:15",
     entryTimestamp: new Date(Date.now() - 0.4 * 3600 * 1000).toISOString(),
@@ -311,7 +311,7 @@ export const mockCars = [
   {
     id: "car-28",
     province: "กระบี่",
-    plate: "8ขพ-1902",
+    plate: "8ขพ1902",
     brand: "Mercedes-Benz E300e",
     entryTime: "06:30",
     entryTimestamp: new Date(Date.now() - 6.1 * 3600 * 1000).toISOString(),
@@ -373,7 +373,7 @@ export const mockUsers = [
     name: "ผู้ดูแลระบบสูงสุด",
     role: "superadmin",
     companyId: null,
-    permissions: ["live_map", "finance", "activity", "manage_roles"]
+    permissions: ["live_map", "finance", "activity", "manage_roles"],
   },
   {
     id: "u-2",
@@ -382,7 +382,7 @@ export const mockUsers = [
     name: "เจ้าหน้าที่ดูแลระบบ",
     role: "admin",
     companyId: "company-001",
-    permissions: ["live_map", "activity"]
+    permissions: ["live_map", "activity"],
   },
   {
     id: "u-3",
@@ -391,8 +391,8 @@ export const mockUsers = [
     name: "เจ้าหน้าที่จอดรถ",
     role: "staff",
     companyId: "company-001",
-    permissions: ["live_map"]
-  }
+    permissions: ["live_map"],
+  },
 ];
 // ข้อมูลบริษัทที่เช่าใช้ระบบ Auto Parking
 export const mockCompanies = [

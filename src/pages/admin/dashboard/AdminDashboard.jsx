@@ -85,14 +85,7 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
       return mockCompanies;
     }
   });
-  const [localSlots, setLocalSlots] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('smart_parking_slots') || 'null');
-      return Array.isArray(saved) ? saved : mockSlots;
-    } catch {
-      return mockSlots;
-    }
-  });
+  const [localSlots, setLocalSlots] = useState(mockSlots);
   const [companyModalOpen, setCompanyModalOpen] = useState(false);
   const [editingCompanyId, setEditingCompanyId] = useState(null);
   const [companyForm, setCompanyForm] = useState({ name: '', code: '', branchCount: 1, parkingLotCount: 1, hourlyRate: 30, paidExitGracePeriodMinutes: 15, overstayHourlyRate: 50 });
@@ -104,6 +97,7 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
   const userRole = currentUser?.role || 'superadmin';
   const isSuperAdmin = userRole === 'superadmin';
   const isCompanyAdmin = userRole === 'admin';
+  const canManageParkingSlots = isSuperAdmin || isCompanyAdmin;
   const canAccessRoles = isSuperAdmin;
   const roleLabel = isSuperAdmin
     ? 'Super Admin'
@@ -163,10 +157,15 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
     return !search || item.name.toLowerCase().includes(search) || item.code.toLowerCase().includes(search);
   });
   const selectedCompany = companies.find((item) => item.id === selectedCompanyId);
-  const normalizedVehicleSearch = vehicleSearch.trim().toLowerCase().replace(/[\s-]/g, '');
+  const normalizedVehicleSearch = vehicleSearch.trim().toLocaleLowerCase('th-TH').replace(/[\s-]/g, '');
+  const isPlateSearch = /[\d\u0E00-\u0E7F]/u.test(normalizedVehicleSearch);
+  const hasInvalidPlateCharacters = /[a-z]/i.test(normalizedVehicleSearch);
   const filteredVehicles = vehicles.filter((car) => {
     if (!normalizedVehicleSearch) return true;
-    return [car.plate, car.province, car.brand, car.slotId, car.floor].some((value) => String(value || '').toLowerCase().replace(/[\s-]/g, '').includes(normalizedVehicleSearch));
+    if (hasInvalidPlateCharacters) return false;
+    const normalizedPlate = String(car.plate || '').toLocaleLowerCase('th-TH').replace(/[\s-]/g, '');
+    if (isPlateSearch) return normalizedPlate.startsWith(normalizedVehicleSearch);
+    return [car.province, car.brand, car.slotId, car.floor].some((value) => String(value || '').toLocaleLowerCase('th-TH').replace(/[\s-]/g, '').includes(normalizedVehicleSearch));
   });
   const vehiclePageSize = 10;
   const vehiclePageCount = Math.max(1, Math.ceil(filteredVehicles.length / vehiclePageSize));
@@ -325,6 +324,7 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
 
   const handleAddParkingSlots = (event) => {
     event.preventDefault();
+    if (!canManageParkingSlots) return;
     const count = Math.min(100, Math.max(1, Number(slotForm.count) || 1));
     const floor = slotForm.floor;
     const prefix = floor === 'FL1' ? 'A' : floor === 'FL2' ? 'B' : `F${floor.replace(/\D/g, '') || 'X'}`;
@@ -342,13 +342,26 @@ export default function AdminDashboard({ currentUser, onLogout, vehicles: vehicl
 
     setLocalSlots(nextSlots);
     if (typeof setSlotsProp === 'function') setSlotsProp(nextSlots);
-    localStorage.setItem('smart_parking_slots', JSON.stringify(nextSlots));
     setSelectedFloor(floor);
     setSlotModalOpen(false);
     setSlotForm((previous) => ({ ...previous, count: 4 }));
   };
 
-  const pageProps = { isSuperAdmin, company, companyStats, companies, selectMenu, occupiedSlots, freeSlots, slots, exportData, openCreateCompany, companySearch, setCompanySearch, filteredCompanies, selectedCompanyId, setSelectedCompanyId, openEditCompany, deleteCompany, selectedCompany, companyModalOpen, handleCompanySubmit, editingCompanyId, companyForm, setCompanyForm, setCompanyModalOpen, selectedFloor, setSelectedFloor, slotForm, setSlotForm, slotFilter, setSlotFilter, slotModalOpen, setSlotModalOpen, handleAddParkingSlots, vehicles, vehicleSearch, setVehicleSearch, filteredVehicles, visibleVehicles, vehiclePage, setVehiclePage, vehiclePageSize, vehiclePageCount, totalRevenue, PERMISSION_OPTIONS, setAddAdminModalOpen, selectedRole, setSelectedRole, rolePermissions, toggleRolePermission, manageableUsers, userPermissionOverrides, openUserPermissionEditor, editingPermissionUser, userPermissionDraft, setUserPermissionDraft, deleteManagedUser, saveUserPermissions, addAdminModalOpen, handleAddAdmin, adminForm, setAdminForm, setEditingPermissionUserId };
+  const handleDeleteParkingSlot = (slotId) => {
+    if (!canManageParkingSlots) return;
+    const nextSlots = slots.filter((slot) => slot.id !== slotId);
+    setLocalSlots(nextSlots);
+    if (typeof setSlotsProp === 'function') setSlotsProp(nextSlots);
+  };
+
+  const handleToggleParkingSlotEV = (slotId) => {
+    if (!canManageParkingSlots) return;
+    const nextSlots = slots.map((slot) => slot.id === slotId ? { ...slot, isEV: !slot.isEV } : slot);
+    setLocalSlots(nextSlots);
+    if (typeof setSlotsProp === 'function') setSlotsProp(nextSlots);
+  };
+
+  const pageProps = { isSuperAdmin, canManageParkingSlots, company, companyStats, companies, selectMenu, occupiedSlots, freeSlots, slots, exportData, openCreateCompany, companySearch, setCompanySearch, filteredCompanies, selectedCompanyId, setSelectedCompanyId, openEditCompany, deleteCompany, selectedCompany, companyModalOpen, handleCompanySubmit, editingCompanyId, companyForm, setCompanyForm, setCompanyModalOpen, selectedFloor, setSelectedFloor, slotForm, setSlotForm, slotFilter, setSlotFilter, slotModalOpen, setSlotModalOpen, handleAddParkingSlots, handleDeleteParkingSlot, handleToggleParkingSlotEV, vehicles, vehicleSearch, setVehicleSearch, filteredVehicles, visibleVehicles, vehiclePage, setVehiclePage, vehiclePageSize, vehiclePageCount, totalRevenue, PERMISSION_OPTIONS, setAddAdminModalOpen, selectedRole, setSelectedRole, rolePermissions, toggleRolePermission, manageableUsers, userPermissionOverrides, openUserPermissionEditor, editingPermissionUser, userPermissionDraft, setUserPermissionDraft, deleteManagedUser, saveUserPermissions, addAdminModalOpen, handleAddAdmin, adminForm, setAdminForm, setEditingPermissionUserId };
 
   let pageContent;
   if (activeMenu === 'overview' && canAccessMenu('overview')) pageContent = <AdminOverviewPage {...pageProps} />;
